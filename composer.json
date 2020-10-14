@@ -1,6 +1,12 @@
 {
+    "autoload": {
+        "psr-0": {
+            "MiniBuffet\\": "src/MiniBuffet"
+        }
+    },
     "require": {
         "slim/slim": "~2.0",
-        "illuminate/database": "4.1.*"
+        "illuminate/database": "4.1.*",
+        "ext-json": "*"
     }
 }
