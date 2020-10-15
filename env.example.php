@@ -11,4 +11,10 @@ return array(
 
     ),
 
+    'buffet' => array(
+        'password' => '123456',
+        'totalRound' => 10,
+
+    ),
+
 );

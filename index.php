@@ -9,6 +9,7 @@ use MiniBuffet\Route;
 use Slim\Slim;
 use Illuminate\Database\Capsule\Manager;
 
+date_default_timezone_set('utc');
 
 $app = new Slim(array(
     'debug' => true,
