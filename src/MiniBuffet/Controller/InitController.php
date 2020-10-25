@@ -12,8 +12,18 @@ class InitController extends RestController
 {
     public function run()
     {
-        if (!Manager::schema()->hasTable('buffet_order')) {
-            Manager::schema()->create('buffet_order', function ($table) {
+        $ORDER_TABLE_NAME = 'buffet_order';
+        $ORDER_DETAIL_TABLE_NAME = 'buffet_order_detail';
+
+        $TABLE_TIP_EXIST = 'table exists, abort creating';
+        $TABLE_TIP_CREATED = 'done';
+
+        $init_status = array();
+
+        if (Manager::schema()->hasTable($ORDER_TABLE_NAME)) {
+            $init_status[$ORDER_TABLE_NAME] = $TABLE_TIP_EXIST;
+        } else {
+            Manager::schema()->create($ORDER_TABLE_NAME, function ($table) {
                 /** @var Blueprint $table */
                 $table->increments('id');
 
@@ -43,10 +53,14 @@ class InitController extends RestController
                 $table->timestamp('createdAt');
                 $table->timestamp('updatedAt');
             });
+
+            $init_status[$ORDER_TABLE_NAME] = $TABLE_TIP_CREATED;
         }
 
-        if (!Manager::schema()->hasTable('buffet_order_detail')) {
-            Manager::schema()->create('buffet_order_detail', function ($table) {
+        if (Manager::schema()->hasTable($ORDER_DETAIL_TABLE_NAME)) {
+            $init_status[$ORDER_DETAIL_TABLE_NAME] = $TABLE_TIP_EXIST;
+        } else {
+            Manager::schema()->create($ORDER_DETAIL_TABLE_NAME, function ($table) use ($ORDER_TABLE_NAME) {
                 /** @var Blueprint $table */
                 $table->increments('id');
 
@@ -55,7 +69,7 @@ class InitController extends RestController
 
                 $table->unsignedInteger('orderId');
                 $table->foreign('orderId')
-                    ->references('id')->on('buffet_order')
+                    ->references('id')->on($ORDER_TABLE_NAME)
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
 
@@ -67,8 +81,10 @@ class InitController extends RestController
                 $table->timestamp('createdAt');
                 $table->timestamp('updatedAt');
             });
+
+            $init_status[$ORDER_DETAIL_TABLE_NAME] = $TABLE_TIP_CREATED;
         }
 
-        $this->responseJson(array('status' => 'done'));
+        $this->responseJson(array('status' => $init_status));
     }
 }
