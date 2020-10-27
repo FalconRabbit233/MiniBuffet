@@ -111,7 +111,7 @@ TEXT
 
         $req = $this->readJson();
 
-        $password = $this->app->env['buffet']['password'];
+        $password = $this->app->setting['buffetPassword'];
 
         $input_password = $req['password'];
 
@@ -169,8 +169,8 @@ TEXT
         self::checkEnum($req['diningType'], array('Buffet', 'a-la-carte'), 'Art');
         self::checkEnum($req['menuType'], array('Mittagsessen', 'Abendessen', 'Spezial'), 'Menütyp');
 
-        $total_round = $this->app->env['buffet']['totalRound'];
-        $password = $this->app->env['buffet']['password'];
+        $total_round = $this->app->setting['totalRound'];
+        $password = $this->app->setting['buffetPassword'];
 
         $order_id = Manager::table('buffet_order')
             ->insertGetId(array(

@@ -14,6 +14,7 @@ class InitController extends RestController
     {
         $ORDER_TABLE_NAME = 'buffet_order';
         $ORDER_DETAIL_TABLE_NAME = 'buffet_order_detail';
+        $SETTING_TABLE_NAME = 'buffet_setting';
 
         $TABLE_TIP_EXIST = 'table exists, abort creating';
         $TABLE_TIP_CREATED = 'done';
@@ -83,6 +84,25 @@ class InitController extends RestController
             });
 
             $init_status[$ORDER_DETAIL_TABLE_NAME] = $TABLE_TIP_CREATED;
+        }
+
+        if (Manager::schema()->hasTable($SETTING_TABLE_NAME)) {
+            $init_status[$SETTING_TABLE_NAME] = $TABLE_TIP_EXIST;
+        } else {
+            Manager::schema()->create($SETTING_TABLE_NAME, function ($table) {
+                /** @var Blueprint $table */
+                $table->increments('id');
+                $table->string('buffetPassword');
+                $table->integer('totalRound');
+            });
+
+            Manager::table($SETTING_TABLE_NAME)
+                ->insert(array(
+                    'buffetPassword' => '123456',
+                    'totalRound' => 10,
+                ));
+
+            $init_status[$SETTING_TABLE_NAME] = $TABLE_TIP_CREATED;
         }
 
         $this->responseJson(array('status' => $init_status));

@@ -30,6 +30,12 @@ $manager->addConnection($app->env['db']);
 $manager->setAsGlobal();
 $manager->bootEloquent();
 
+$app->container->singleton('setting', function () use ($manager) {
+    return $manager::table('buffet_setting')
+        ->select(array('*'))
+        ->first();
+});
+
 Route::run($app);
 
 $app->run();
