@@ -18,7 +18,12 @@ class TableController extends RestController
         $result = Manager::table('besitzen')
             ->selectRaw(<<<TEXT
 besitzen.*,
-(select count(id) from buffet_order where buffet_order.Tisch = besitzen.Tisch) as orderExists
+(
+    select count(id) 
+    from buffet_order 
+    where buffet_order.Tisch = besitzen.Tisch and
+          buffet_order.closed = 0
+) as orderExists
 TEXT
             )
             ->orderBy('Reihenfolge')
@@ -41,7 +46,12 @@ TEXT
         $result = Manager::table('besitzen')
             ->selectRaw(<<<TEXT
 besitzen.*,
-(select count(id) from buffet_order where buffet_order.Tisch = besitzen.Tisch) as orderExists
+(
+    select count(id) 
+    from buffet_order 
+    where buffet_order.Tisch = besitzen.Tisch and
+          buffet_order.closed = 0
+) as orderExists
 TEXT
             )
             ->where('besitzen.Tisch', '=', $id)

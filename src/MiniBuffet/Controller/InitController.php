@@ -31,11 +31,14 @@ class InitController extends RestController
                 $table->integer('timer')->comment('seconds for each round');
                 $table->integer('item')->comment('item count for each round');
 
+                $table->timestamp('lastRoundAt');
+                $table->integer('currentRound')->default(0);
                 $table->integer('totalRound');
                 $table->string('password');
 
                 $table->decimal('totalPrice')->default(0);
                 $table->boolean('closed')->default(0);
+                $table->index('closed');
 
                 $table->timestamp('createdAt');
                 $table->timestamp('updatedAt');
