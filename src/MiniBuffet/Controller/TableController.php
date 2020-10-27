@@ -70,6 +70,35 @@ TEXT
      * @param $id
      * @throws EntityNotFoundException
      */
+    public function getCurrentOrderById($id)
+    {
+        $table = Manager::table('besitzen')
+            ->where('Tisch', '=', $id)
+            ->first();
+
+        if (!$table) {
+            throw new EntityNotFoundException("Tisch($id)");
+        }
+
+        $existing_order = Manager::table('buffet_order')
+            ->select(array('*'))
+            ->where('Tisch', '=', $id)
+            ->where('closed', '=', 0)
+            ->limit(1)
+            ->first();
+
+        $order_exists = (bool)$existing_order;
+
+        $this->responseJson(array(
+            'exists' => $order_exists,
+            'info' => $existing_order
+        ));
+    }
+
+    /**
+     * @param $id
+     * @throws EntityNotFoundException
+     */
     public function loginById($id)
     {
         $table = Manager::table('besitzen')

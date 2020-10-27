@@ -33,6 +33,7 @@ class Route
 
             $app->get('/', array($table_controller, 'getAll'));
             $app->get('/:id', array($table_controller, 'getById'));
+            $app->get('/:id/currentOrder', array($table_controller, 'getCurrentOrderById'));
             $app->post('/:id/login', array($table_controller, 'loginById'));
             $app->post('/:id/start', array($table_controller, 'startById'));
         });
