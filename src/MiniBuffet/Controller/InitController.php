@@ -18,6 +18,7 @@ class InitController extends RestController
         $ORDER_TABLE_NAME = 'buffet_order';
         $ORDER_DETAIL_TABLE_NAME = 'buffet_order_detail';
         $SETTING_TABLE_NAME = 'buffet_setting';
+        $DRINK_GROUP_TABLE_NAME = 'buffet_drink_group';
 
         $COLUMN_TIP_EXIST = 'column exists, abort creating';
         $TABLE_TIP_EXIST = 'table exists, abort creating';
@@ -132,6 +133,19 @@ SQL
                 ));
 
             $init_status[$SETTING_TABLE_NAME] = $TABLE_TIP_CREATED;
+        }
+
+        if (Manager::schema()->hasTable($DRINK_GROUP_TABLE_NAME)) {
+            $init_status[$DRINK_GROUP_TABLE_NAME] = $TABLE_TIP_EXIST;
+        } else {
+            Manager::schema()->create($DRINK_GROUP_TABLE_NAME, function ($table) {
+                /** @var Blueprint $table */
+                $table->increments('id');
+                $table->integer('groupId');
+
+            });
+
+            $init_status[$DRINK_GROUP_TABLE_NAME] = $TABLE_TIP_CREATED;
         }
 
         $this->responseJson(array('status' => $init_status));
