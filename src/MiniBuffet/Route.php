@@ -7,6 +7,7 @@ namespace MiniBuffet;
 use MiniBuffet\Controller\ConnectionTestController;
 use MiniBuffet\Controller\InitController;
 use MiniBuffet\Controller\ProductController;
+use MiniBuffet\Controller\RestaurantController;
 use MiniBuffet\Controller\TableController;
 use Slim\Slim;
 
@@ -46,5 +47,12 @@ class Route
             $app->get('/drinks', array($product_controller, 'getDrinks'));
             $app->get('/dishes', array($product_controller, 'getDishes'));
         });
+
+        $app->group('/restaurant', function () use ($app) {
+            $restaurant_controller = new RestaurantController($app);
+
+            $app->get('/info', array($restaurant_controller, 'info'));
+        });
+
     }
 }
