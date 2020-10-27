@@ -6,6 +6,7 @@ namespace MiniBuffet;
 
 use MiniBuffet\Controller\ConnectionTestController;
 use MiniBuffet\Controller\InitController;
+use MiniBuffet\Controller\ProductController;
 use MiniBuffet\Controller\TableController;
 use Slim\Slim;
 
@@ -36,6 +37,14 @@ class Route
             $app->get('/:id/currentOrder', array($table_controller, 'getCurrentOrderById'));
             $app->post('/:id/login', array($table_controller, 'loginById'));
             $app->post('/:id/start', array($table_controller, 'startById'));
+        });
+
+        $app->group('/products', function () use ($app) {
+            $product_controller = new ProductController($app);
+
+            $app->get('/', array($product_controller, 'getAll'));
+            $app->get('/drinks', array($product_controller, 'getDrinks'));
+            $app->get('/dishes', array($product_controller, 'getDishes'));
         });
     }
 }
