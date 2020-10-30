@@ -6,7 +6,7 @@ namespace MiniBuffet;
 
 use Slim\Slim;
 
-class ServiceBase
+abstract class ServiceBase
 {
     protected $app;
 

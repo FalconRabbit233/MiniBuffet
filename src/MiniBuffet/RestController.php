@@ -9,7 +9,7 @@ use MiniBuffet\Exception\ParamNullException;
 use MiniBuffet\Exception\ParamRequiredException;
 use Slim\Slim;
 
-class RestController
+abstract class RestController
 {
     protected $app;
 
