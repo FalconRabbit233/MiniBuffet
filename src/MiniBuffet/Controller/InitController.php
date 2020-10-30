@@ -109,6 +109,11 @@ SQL
                 $table->decimal('price');
                 $table->integer('round');
 
+                $table->boolean('attribute1Selected')->default(false);
+                $table->boolean('attribute2Selected')->default(false);
+                $table->string('attr1')->nullable();
+                $table->string('attr2')->nullable();
+
                 $table->timestamp('createdAt');
                 $table->timestamp('updatedAt');
             });
