@@ -12,6 +12,7 @@ use MiniBuffet\Controller\RestaurantController;
 use MiniBuffet\Controller\TableController;
 use MiniBuffet\Service\OrderService;
 use MiniBuffet\Service\ProductService;
+use MiniBuffet\Service\TableService;
 use Slim\Slim;
 
 class DI
@@ -77,6 +78,13 @@ class DI
             'MiniBuffet\Service\OrderService',
             function () use ($app) {
                 return new OrderService($app);
+            }
+        );
+
+        $app->container->singleton(
+            'MiniBuffet\Service\TableService',
+            function () use ($app) {
+                return new TableService($app);
             }
         );
         // endregion

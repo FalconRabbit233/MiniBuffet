@@ -10,9 +10,19 @@ use MiniBuffet\Exception\EnumException;
 use MiniBuffet\Exception\ParamNullException;
 use MiniBuffet\Exception\ParamRequiredException;
 use MiniBuffet\RestController;
+use MiniBuffet\Service\TableService;
 
 class TableController extends RestController
 {
+
+    /**
+     * @return TableService
+     */
+    protected function getTableService()
+    {
+        return $this->app->container->get('MiniBuffet\Service\TableService');
+    }
+
     public function getAll()
     {
         $result = Manager::table('besitzen')
@@ -72,13 +82,7 @@ TEXT
      */
     public function getCurrentOrderById($id)
     {
-        $table = Manager::table('besitzen')
-            ->where('Tisch', '=', $id)
-            ->first();
-
-        if (!$table) {
-            throw new EntityNotFoundException("Tisch($id)");
-        }
+        $table = $this->getTableService()->findTableById($id);
 
         $existing_order = Manager::table('buffet_order')
             ->select(array('*'))
@@ -101,13 +105,7 @@ TEXT
      */
     public function loginById($id)
     {
-        $table = Manager::table('besitzen')
-            ->where('Tisch', '=', $id)
-            ->first();
-
-        if (!$table) {
-            throw new EntityNotFoundException("Tisch($id)");
-        }
+        $table = $this->getTableService()->findTableById($id);
 
         $req = $this->readJson();
 
@@ -132,13 +130,7 @@ TEXT
      */
     public function startById($id)
     {
-        $table = Manager::table('besitzen')
-            ->where('Tisch', '=', $id)
-            ->first();
-
-        if (!$table) {
-            throw new EntityNotFoundException("Tisch($id)");
-        }
+        $table = $this->getTableService()->findTableById($id);
 
         $existing_order = Manager::table('buffet_order')
             ->select(array('id', 'totalRound'))
@@ -191,6 +183,46 @@ TEXT
             'isNewOrder' => true,
             'orderId' => $order_id,
             'totalRound' => $total_round,
+        ));
+    }
+
+    /**
+     * @param $id
+     * @throws EntityNotFoundException
+     */
+    public function callWaiterById($id)
+    {
+        $this->getTableService()->findTableById($id);
+
+        // todo: do something to show customer request
+
+        $this->responseJson(array(
+            'succeed' => false
+        ));
+    }
+
+    /**
+     * @param $id
+     * @throws EntityNotFoundException
+     * @throws EnumException
+     * @throws ParamRequiredException
+     */
+    public function callCheckOutById($id)
+    {
+        $this->getTableService()->findTableById($id);
+
+        $request = $this->readJson();
+
+        self::checkRequired($request, array('payType'));
+
+        $pay_type = $request['payType'];
+
+        self::checkEnum($pay_type, array('Bar', 'Karte'), 'Bezahlungsart');
+
+        // todo: do something to show customer request
+
+        $this->responseJson(array(
+            'succeed' => false
         ));
     }
 }

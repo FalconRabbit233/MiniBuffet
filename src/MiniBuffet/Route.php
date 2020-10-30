@@ -33,6 +33,8 @@ class Route
             $app->get('/:id/currentOrder', array($table_controller, 'getCurrentOrderById'));
             $app->post('/:id/login', array($table_controller, 'loginById'));
             $app->post('/:id/start', array($table_controller, 'startById'));
+            $app->post('/:id/callWaiter', array($table_controller, 'callWaiterById'));
+            $app->post('/:id/callCheckOut', array($table_controller, 'callCheckOutById'));
         });
 
         $app->group('/products', function () use ($app) {
