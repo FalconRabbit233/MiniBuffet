@@ -5,6 +5,7 @@ namespace MiniBuffet\Middleware;
 
 
 use MiniBuffet\Exception\BuffetItemAmountOverLimitException;
+use MiniBuffet\Exception\BuffetPasswordWrongException;
 use MiniBuffet\Exception\EntityNotFoundException;
 use MiniBuffet\Exception\EnumException;
 use MiniBuffet\Exception\OrderClosedException;
@@ -69,6 +70,11 @@ class CustomErrorMiddleware extends Middleware
             $this->errorInJson(400, array(
                 'exception' => 'BuffetItemAmountOverLimitException',
                 'msg' => "Sie Können {$exception->getMessage()} Gerichte bestellen"
+            ));
+        } catch (BuffetPasswordWrongException $exception) {
+            $this->errorInJson(400, array(
+                'exception' => 'BuffetPasswordWrongException',
+                'msg' => "Passwort falsch"
             ));
         }
     }

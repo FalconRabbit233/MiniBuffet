@@ -43,6 +43,15 @@ class Route
             $app->get('/dishes', array($product_controller, 'getDishes'));
         });
 
+        $app->group('/orders', function () use ($app) {
+            $order_controller = $app->container->get('MiniBuffet\Controller\OrderController');
+
+            $app->get('/:id', array($order_controller, 'getById'));
+            $app->post('/:id', array($order_controller, 'addDishesToOrder'));
+            $app->post('/:id/close', array($order_controller, 'closeById'));
+
+        });
+
         $app->group('/restaurant', function () use ($app) {
             $restaurant_controller = $app->container->get('MiniBuffet\Controller\RestaurantController');
 
