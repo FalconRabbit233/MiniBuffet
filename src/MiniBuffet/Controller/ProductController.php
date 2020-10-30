@@ -6,34 +6,27 @@ namespace MiniBuffet\Controller;
 
 use MiniBuffet\RestController;
 use MiniBuffet\Service\ProductService;
-use Slim\Slim;
 
 class ProductController extends RestController
 {
-    /** @var ProductService */
-    protected $product_service;
-
     /**
-     * ProductController constructor.
-     * @param Slim $app
+     * @return ProductService
      */
-    public function __construct($app)
+    protected function getProductService()
     {
-        parent::__construct($app);
-
-        $this->product_service = new ProductService($app);
+        return $this->app->container->get('MiniBuffet\Service\ProductService');
     }
 
     public function getAll()
     {
-        $this->responseJson($this->product_service->getProcessedProducts());
+        $this->responseJson($this->getProductService()->getProcessedProducts());
     }
 
     public function getDrinks()
     {
         $this->responseJson(
             array_filter(
-                $this->product_service->getProcessedProducts(),
+                $this->getProductService()->getProcessedProducts(),
                 function ($item) {
                     return $item['isDrink'];
                 })
@@ -44,7 +37,7 @@ class ProductController extends RestController
     {
         $this->responseJson(
             array_filter(
-                $this->product_service->getProcessedProducts(),
+                $this->getProductService()->getProcessedProducts(),
                 function ($item) {
                     return !$item['isDrink'];
                 })

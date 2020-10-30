@@ -2,6 +2,7 @@
 
 include_once __DIR__ . '/vendor/autoload.php';
 
+use MiniBuffet\DI;
 use MiniBuffet\Exception\RouteNotFoundException;
 use MiniBuffet\Middleware\CustomErrorMiddleware;
 use MiniBuffet\Middleware\JsonResponseMiddleware;
@@ -36,6 +37,7 @@ $app->container->singleton('setting', function () use ($manager) {
         ->first();
 });
 
+DI::run($app);
 Route::run($app);
 
 $app->run();

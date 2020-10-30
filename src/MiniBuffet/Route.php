@@ -4,11 +4,6 @@
 namespace MiniBuffet;
 
 
-use MiniBuffet\Controller\ConnectionTestController;
-use MiniBuffet\Controller\InitController;
-use MiniBuffet\Controller\ProductController;
-use MiniBuffet\Controller\RestaurantController;
-use MiniBuffet\Controller\TableController;
 use Slim\Slim;
 
 class Route
@@ -19,19 +14,19 @@ class Route
     public static function run($app)
     {
         $app->group('/connTest', function () use ($app) {
-            $conn_test_controller = new ConnectionTestController($app);
+            $conn_test_controller = $app->container->get('MiniBuffet\Controller\ConnectionTestController');
 
             $app->get('/', array($conn_test_controller, 'testAll'));
         });
 
         $app->group('/init', function () use ($app) {
-            $init_controller = new InitController($app);
+            $init_controller = $app->container->get('MiniBuffet\Controller\InitController');
 
             $app->get('/', array($init_controller, 'run'));
         });
 
         $app->group('/tables', function () use ($app) {
-            $table_controller = new TableController($app);
+            $table_controller = $app->container->get('MiniBuffet\Controller\TableController');
 
             $app->get('/', array($table_controller, 'getAll'));
             $app->get('/:id', array($table_controller, 'getById'));
@@ -41,7 +36,7 @@ class Route
         });
 
         $app->group('/products', function () use ($app) {
-            $product_controller = new ProductController($app);
+            $product_controller = $app->container->get('MiniBuffet\Controller\ProductController');
 
             $app->get('/', array($product_controller, 'getAll'));
             $app->get('/drinks', array($product_controller, 'getDrinks'));
@@ -49,7 +44,7 @@ class Route
         });
 
         $app->group('/restaurant', function () use ($app) {
-            $restaurant_controller = new RestaurantController($app);
+            $restaurant_controller = $app->container->get('MiniBuffet\Controller\RestaurantController');
 
             $app->get('/info', array($restaurant_controller, 'info'));
         });
