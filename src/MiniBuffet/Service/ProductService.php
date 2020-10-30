@@ -10,27 +10,21 @@ use MiniBuffet\Utils;
 
 class ProductService extends ServiceBase
 {
-    /** @var array */
-    private static $raw_groups;
-
-    /** @var array */
-    private static $raw_drink_groups;
-
-    /** @var array */
-    private static $raw_products;
 
     /**
      * @return array
      */
     public function getRawGroups()
     {
-        if (self::$raw_groups === null) {
-            self::$raw_groups = Manager::table('wgruppen')
+        static $raw_groups;
+
+        if ($raw_groups === null) {
+            $raw_groups = Manager::table('wgruppen')
                 ->select(array('*'))
                 ->get();
         }
 
-        return self::$raw_groups;
+        return $raw_groups;
     }
 
     /**
@@ -38,13 +32,15 @@ class ProductService extends ServiceBase
      */
     public function getRawDrinkGroups()
     {
-        if (self::$raw_drink_groups === null) {
-            self::$raw_drink_groups = Manager::table('buffet_drink_group')
+        static $raw_drink_groups;
+
+        if ($raw_drink_groups === null) {
+            $raw_drink_groups = Manager::table('buffet_drink_group')
                 ->select(array('*'))
                 ->get();
         }
 
-        return self::$raw_drink_groups;
+        return $raw_drink_groups;
     }
 
     /**
@@ -52,13 +48,15 @@ class ProductService extends ServiceBase
      */
     public function getRawProducts()
     {
-        if (self::$raw_products === null) {
-            self::$raw_products = Manager::table('s_karte')
+        static $raw_products;
+
+        if ($raw_products === null) {
+            $raw_products = Manager::table('s_karte')
                 ->select(array('*'))
                 ->get();
         }
 
-        return self::$raw_products;
+        return $raw_products;
     }
 
     /**
@@ -116,5 +114,21 @@ class ProductService extends ServiceBase
         }
 
         return $processed_products;
+    }
+
+    public function getProcessedProductById($id)
+    {
+        static $artId_processedProducts_dict;
+
+        if ($artId_processedProducts_dict === null) {
+            $artId_processedProducts_dict = Utils::listToDict(
+                $this->getProcessedProducts(),
+                function ($item) {
+                    return $item['ART_ID'];
+                }
+            );
+        }
+
+        return $artId_processedProducts_dict[$id];
     }
 }
