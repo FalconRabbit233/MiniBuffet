@@ -33,7 +33,7 @@ select column_name from information_schema.columns where table_schema = ? and ta
 SQL
                 , array($this->app->env['db']['database'], $PRODUCT_TABLE_NAME));
             $column_names = array_map(function ($item) {
-                return $item['column_name'];
+                return $item['COLUMN_NAME'];
             }, $columns);
 
             if (in_array($DESCRIPTION_COLUMN_NAME, $column_names)) {
@@ -41,7 +41,7 @@ SQL
             } else {
                 Manager::schema()->table($PRODUCT_TABLE_NAME, function ($table) use ($DESCRIPTION_COLUMN_NAME) {
                     /** @var Blueprint $table */
-                    $table->text($DESCRIPTION_COLUMN_NAME)->default('');
+                    $table->text($DESCRIPTION_COLUMN_NAME);
                 });
 
                 $init_status["$PRODUCT_TABLE_NAME.$DESCRIPTION_COLUMN_NAME"] = $TABLE_TIP_CREATED;
@@ -72,7 +72,7 @@ SQL
                 $table->integer('timer')->comment('seconds for each round');
                 $table->integer('item')->comment('item count for each round');
 
-                $table->timestamp('lastRoundAt');
+                $table->timestamp('lastRoundAt')->default('2020-10-31 00:00:00');
                 $table->integer('currentRound')->default(0);
                 $table->integer('totalRound');
                 $table->string('password');
@@ -81,8 +81,8 @@ SQL
                 $table->boolean('closed')->default(0);
                 $table->index('closed');
 
-                $table->timestamp('createdAt');
-                $table->timestamp('updatedAt');
+                $table->timestamp('createdAt')->default('2020-10-31 00:00:00');
+                $table->timestamp('updatedAt')->default('2020-10-31 00:00:00');
             });
 
             $init_status[$ORDER_TABLE_NAME] = $TABLE_TIP_CREATED;
@@ -114,8 +114,8 @@ SQL
                 $table->string('attr1')->nullable();
                 $table->string('attr2')->nullable();
 
-                $table->timestamp('createdAt');
-                $table->timestamp('updatedAt');
+                $table->timestamp('createdAt')->default('2020-10-31 00:00:00');
+                $table->timestamp('updatedAt')->default('2020-10-31 00:00:00');
             });
 
             $init_status[$ORDER_DETAIL_TABLE_NAME] = $TABLE_TIP_CREATED;

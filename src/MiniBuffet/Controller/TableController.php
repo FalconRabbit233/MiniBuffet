@@ -102,6 +102,8 @@ TEXT
     /**
      * @param $id
      * @throws EntityNotFoundException
+     * @throws ParamRequiredException
+     * @throws EnumException
      */
     public function loginById($id)
     {
@@ -111,12 +113,18 @@ TEXT
 
         $password = $this->app->setting['buffetPassword'];
 
+        self::checkRequired($req, array('password', 'diningType'));
+
+        $dining_type = $req['diningType'];
+
+        self::checkEnum($dining_type, array('Buffet', 'a-la-carte'), 'Art');
+
         $input_password = $req['password'];
 
         $password_correct = $password == $input_password;
 
         $this->responseJson(array(
-            'diningType' => $req['diningType'],
+            'diningType' => $dining_type,
             'passwordCorrect' => $password_correct
         ));
     }
