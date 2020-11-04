@@ -14,6 +14,11 @@ class RestaurantController extends RestController
         $info = Manager::table('angaben')
             ->first();
 
+        $opening_info = Manager::table('sf_table')
+            ->get();
+
+        $info['openingTime'] = $opening_info;  
+
         $this->responseJson($info);
     }
 }
