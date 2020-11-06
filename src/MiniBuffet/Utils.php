@@ -28,4 +28,17 @@ class Utils
     {
         return (float)number_format($price, 2, '.', '');
     }
+
+    /**
+     * @param \Slim\Slim $app
+     * @param string $relPath
+     * @return string
+     */
+    public static function getRouteUri($app, $relPath)
+    {
+        return <<<URL
+{$app->env['protocol']}://{$app->env['root']}/{$app->env['appDir']}/$relPath
+URL;
+
+    }
 }

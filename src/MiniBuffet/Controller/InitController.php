@@ -14,6 +14,7 @@ class InitController extends RestController
     {
         $PRODUCT_TABLE_NAME = 's_karte';
         $DESCRIPTION_COLUMN_NAME = 'beschreibung';
+        $IMAGE_COLUMN_NAME = 'image';
 
         $ORDER_TABLE_NAME = 'buffet_order';
         $ORDER_DETAIL_TABLE_NAME = 'buffet_order_detail';
@@ -29,7 +30,7 @@ class InitController extends RestController
 
         if (Manager::schema()->hasTable($PRODUCT_TABLE_NAME)) {
             $columns = Manager::connection()->select(<<<SQL
-select column_name from information_schema.columns where table_schema = ? and table_name = ?
+select COLUMN_NAME from information_schema.columns where table_schema = ? and table_name = ?
 SQL
                 , array($this->app->env['db']['database'], $PRODUCT_TABLE_NAME));
             $column_names = array_map(function ($item) {
@@ -45,6 +46,17 @@ SQL
                 });
 
                 $init_status["$PRODUCT_TABLE_NAME.$DESCRIPTION_COLUMN_NAME"] = $TABLE_TIP_CREATED;
+            }
+
+            if (in_array($IMAGE_COLUMN_NAME, $column_names)) {
+                $init_status["$PRODUCT_TABLE_NAME.$IMAGE_COLUMN_NAME"] = $COLUMN_TIP_EXIST;
+            } else {
+                Manager::schema()->table($PRODUCT_TABLE_NAME, function ($table) use ($IMAGE_COLUMN_NAME) {
+                    /** @var Blueprint $table */
+                    $table->text($IMAGE_COLUMN_NAME)->nullable();
+                });
+
+                $init_status["$PRODUCT_TABLE_NAME.$IMAGE_COLUMN_NAME"] = $TABLE_TIP_CREATED;
             }
 
         } else {

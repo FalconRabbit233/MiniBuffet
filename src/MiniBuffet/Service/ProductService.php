@@ -107,6 +107,9 @@ class ProductService extends ServiceBase
                 $rawProduct['group_info'] = $this->getGroupByGroupId($group_id);
                 $rawProduct['isDrink'] = $this->isGroupDrink($group_id);
                 $rawProduct['price'] = $rawProduct['isDrink'] ? $rawProduct['PREIS'] : 0;
+                $rawProduct['image'] = $rawProduct['image'] == null ?
+                    null :
+                    Utils::getRouteUri($this->app, $rawProduct['image']);
 
                 $processed_products[] = $rawProduct;
             }

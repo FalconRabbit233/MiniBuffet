@@ -11,4 +11,8 @@ return array(
 
     ),
 
+    'protocol' => 'https',
+    'root' => 'localhost',
+    'appDir' => 'MiniBuffet',
+
 );

@@ -1,4 +1,5 @@
 .idea
+public
 vendor
 env.php
 composer.lock
