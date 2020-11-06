@@ -116,6 +116,23 @@ class ProductService extends ServiceBase
         return $processed_products;
     }
 
+    public function getProcessedProductsInGroup()
+    {
+        $grouped_processed_product = array();
+        foreach ($this->getProcessedProducts() as $processedProduct) {
+            $group_id = $processedProduct['Gruppen'];
+            if (isset($grouped_processed_product[$group_id])) {
+                $grouped_processed_product[$group_id]['items'][] = $processedProduct;
+            }else{
+                $group = $this->getGroupByGroupId($group_id);
+                $group['items'] = array($processedProduct);
+                $grouped_processed_product[$group_id] = $group;
+            }
+        }
+
+        return array_values($grouped_processed_product);
+    }
+
     public function getProcessedProductById($id)
     {
         static $artId_processedProducts_dict;

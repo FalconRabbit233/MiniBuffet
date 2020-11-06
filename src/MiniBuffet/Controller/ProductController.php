@@ -24,23 +24,25 @@ class ProductController extends RestController
 
     public function getDrinks()
     {
-        $this->responseJson(
-            array_filter(
-                $this->getProductService()->getProcessedProducts(),
-                function ($item) {
-                    return $item['isDrink'];
-                })
-        );
+        $result = array();
+        foreach ($this->getProductService()->getProcessedProductsInGroup() as $item) {
+            if ($this->getProductService()->isGroupDrink($item['Gruppe'])) {
+                $result[] = $item;
+            }
+        }
+
+        $this->responseJson($result);
     }
 
     public function getDishes()
     {
-        $this->responseJson(
-            array_filter(
-                $this->getProductService()->getProcessedProducts(),
-                function ($item) {
-                    return !$item['isDrink'];
-                })
-        );
+        $result = array();
+        foreach ($this->getProductService()->getProcessedProductsInGroup() as $item) {
+            if (!$this->getProductService()->isGroupDrink($item['Gruppe'])) {
+                $result[] = $item;
+            }
+        }
+
+        $this->responseJson($result);
     }
 }
