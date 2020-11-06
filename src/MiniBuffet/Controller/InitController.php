@@ -15,6 +15,7 @@ class InitController extends RestController
         $PRODUCT_TABLE_NAME = 's_karte';
         $DESCRIPTION_COLUMN_NAME = 'beschreibung';
         $IMAGE_COLUMN_NAME = 'image';
+        $SUB_TITLE_COLUMN_NAME = 'subTitle';
 
         $ORDER_TABLE_NAME = 'buffet_order';
         $ORDER_DETAIL_TABLE_NAME = 'buffet_order_detail';
@@ -57,6 +58,17 @@ SQL
                 });
 
                 $init_status["$PRODUCT_TABLE_NAME.$IMAGE_COLUMN_NAME"] = $TABLE_TIP_CREATED;
+            }
+
+            if (in_array($SUB_TITLE_COLUMN_NAME, $column_names)) {
+                $init_status["$PRODUCT_TABLE_NAME.$SUB_TITLE_COLUMN_NAME"] = $COLUMN_TIP_EXIST;
+            } else {
+                Manager::schema()->table($PRODUCT_TABLE_NAME, function ($table) use ($SUB_TITLE_COLUMN_NAME) {
+                    /** @var Blueprint $table */
+                    $table->string($SUB_TITLE_COLUMN_NAME)->default('');
+                });
+
+                $init_status["$PRODUCT_TABLE_NAME.$SUB_TITLE_COLUMN_NAME"] = $TABLE_TIP_CREATED;
             }
 
         } else {
