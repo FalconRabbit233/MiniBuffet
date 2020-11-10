@@ -60,11 +60,11 @@ class OrderController extends RestController
 
         $request = $this->readJson();
 
-        self::checkRequired($request, array('item'));
+        self::checkRequired($request, array('items'));
 
         $dishes_to_add = array();
         $drinks_to_add = array();
-        foreach ($request['item'] as $product_info) {
+        foreach ($request['items'] as $product_info) {
 
             try {
                 self::checkRequired($product_info, array('ART_ID', 'amount'));
