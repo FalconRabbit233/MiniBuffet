@@ -52,6 +52,12 @@ class Route
             $app->post('/:id', array($order_controller, 'addDishesToOrder'));
             $app->post('/:id/close', array($order_controller, 'closeById'));
 
+            $cart_controller = $app->container->get('MiniBuffet\Controller\CartController');
+            $app->get('/:orderId/cart', array($cart_controller, 'getByOrderId'));
+            $app->post('/:orderId/cart/add', array($cart_controller, 'addByOrderId'));
+            $app->post('/:orderId/cart/decrease', array($cart_controller, 'decreaseByOrderId'));
+            $app->post('/:orderId/cart/submit', array($cart_controller, 'submitToOrder'));
+
         });
 
         $app->group('/restaurant', function () use ($app) {

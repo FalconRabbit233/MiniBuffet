@@ -21,6 +21,7 @@ class InitController extends RestController
         $ORDER_DETAIL_TABLE_NAME = 'buffet_order_detail';
         $SETTING_TABLE_NAME = 'buffet_setting';
         $DRINK_GROUP_TABLE_NAME = 'buffet_drink_group';
+        $CART_TABLE_NAME = 'buffet_cart';
 
         $COLUMN_TIP_EXIST = 'column exists, abort creating';
         $TABLE_TIP_EXIST = 'table exists, abort creating';
@@ -175,6 +176,29 @@ SQL
             });
 
             $init_status[$DRINK_GROUP_TABLE_NAME] = $TABLE_TIP_CREATED;
+        }
+
+        if (Manager::schema()->hasTable($CART_TABLE_NAME)) {
+            $init_status[$CART_TABLE_NAME] = $TABLE_TIP_EXIST;
+        } else {
+            Manager::schema()->create($CART_TABLE_NAME, function ($table) use ($ORDER_TABLE_NAME) {
+                /** @var Blueprint $table */
+                $table->increments('id');
+
+                $table->unsignedInteger('orderId');
+                $table->foreign('orderId')
+                    ->references('id')->on($ORDER_TABLE_NAME)
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+
+                $table->integer('ART_ID');
+                $table->integer('amount');
+                $table->boolean('attribute1Selected')->default(false);
+                $table->boolean('attribute2Selected')->default(false);
+
+            });
+
+            $init_status[$CART_TABLE_NAME] = $TABLE_TIP_CREATED;
         }
 
         $this->responseJson(array('status' => $init_status));

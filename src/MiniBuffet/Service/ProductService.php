@@ -5,6 +5,7 @@ namespace MiniBuffet\Service;
 
 
 use Illuminate\Database\Capsule\Manager;
+use MiniBuffet\Exception\EntityNotFoundException;
 use MiniBuffet\ServiceBase;
 use MiniBuffet\Utils;
 
@@ -136,6 +137,11 @@ class ProductService extends ServiceBase
         return array_values($grouped_processed_product);
     }
 
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws EntityNotFoundException
+     */
     public function getProcessedProductById($id)
     {
         static $artId_processedProducts_dict;
@@ -147,6 +153,10 @@ class ProductService extends ServiceBase
                     return $item['ART_ID'];
                 }
             );
+        }
+
+        if (!isset($artId_processedProducts_dict[$id])) {
+            throw new EntityNotFoundException("Gericht($id)");
         }
 
         return $artId_processedProducts_dict[$id];

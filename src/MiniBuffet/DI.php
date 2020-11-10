@@ -4,12 +4,14 @@
 namespace MiniBuffet;
 
 
+use MiniBuffet\Controller\CartController;
 use MiniBuffet\Controller\ConnectionTestController;
 use MiniBuffet\Controller\InitController;
 use MiniBuffet\Controller\OrderController;
 use MiniBuffet\Controller\ProductController;
 use MiniBuffet\Controller\RestaurantController;
 use MiniBuffet\Controller\TableController;
+use MiniBuffet\Service\CartService;
 use MiniBuffet\Service\OrderService;
 use MiniBuffet\Service\ProductService;
 use MiniBuffet\Service\TableService;
@@ -64,6 +66,13 @@ class DI
                 return new TableController($app);
             }
         );
+
+        $app->container->singleton(
+            'MiniBuffet\Controller\CartController',
+            function () use ($app) {
+                return new CartController($app);
+            }
+        );
         // endregion
 
         // region -- service --
@@ -85,6 +94,13 @@ class DI
             'MiniBuffet\Service\TableService',
             function () use ($app) {
                 return new TableService($app);
+            }
+        );
+
+        $app->container->singleton(
+            'MiniBuffet\Service\CartService',
+            function () use ($app) {
+                return new CartService($app);
             }
         );
         // endregion
