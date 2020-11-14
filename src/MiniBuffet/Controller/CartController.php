@@ -48,7 +48,7 @@ class CartController extends RestController
      * @throws EntityNotFoundException
      * @throws ParamRequiredException
      */
-    public function addByOrderId($orderId)
+    public function changeByOrderId($orderId)
     {
         $order = $this->getOrderService()->getRawOrderById($orderId);
 
@@ -57,31 +57,6 @@ class CartController extends RestController
         self::checkRequired($req, array('ART_ID', 'amount'));
 
         $product = $req;
-
-        $this->getCartService()->changeCartProduct($orderId, $product);
-
-        $feedback = $this->getCartService()
-            ->getCartByOrderIdWithProcessedProducts($orderId);
-
-        $this->responseJson($feedback);
-    }
-
-    /**
-     * @param int $orderId
-     * @throws EntityNotFoundException
-     * @throws ParamRequiredException
-     */
-    public function decreaseByOrderId($orderId)
-    {
-        $order = $this->getOrderService()->getRawOrderById($orderId);
-
-        $req = $this->readJson();
-
-        self::checkRequired($req, array('ART_ID', 'amount'));
-
-        $product = $req;
-
-        $product['amount'] = 0 - $product['amount'];
 
         $this->getCartService()->changeCartProduct($orderId, $product);
 

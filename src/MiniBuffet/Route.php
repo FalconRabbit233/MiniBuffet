@@ -54,8 +54,7 @@ class Route
 
             $cart_controller = $app->container->get('MiniBuffet\Controller\CartController');
             $app->get('/:orderId/cart', array($cart_controller, 'getByOrderId'));
-            $app->post('/:orderId/cart/add', array($cart_controller, 'addByOrderId'));
-            $app->post('/:orderId/cart/decrease', array($cart_controller, 'decreaseByOrderId'));
+            $app->post('/:orderId/cart/change', array($cart_controller, 'changeByOrderId'));
             $app->post('/:orderId/cart/submit', array($cart_controller, 'submitToOrder'));
 
         });

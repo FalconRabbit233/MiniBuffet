@@ -62,15 +62,17 @@ class CartService extends ServiceBase
      */
     public function changeCartProduct($orderId, $product)
     {
-        static $cartItems;
-        if (!isset($cartItems[$orderId])) {
-            $cartItems[$orderId] = Utils::listToDict(
+        static $orderId_cartItems;
+        if (!isset($orderId_cartItems[$orderId])) {
+            $orderId_cartItems[$orderId] = Utils::listToDict(
                 $this->getRawCartByOrderId($orderId),
                 function ($item) {
                     return $item['id'];
                 }
             );
         }
+
+        $cartItems = $orderId_cartItems[$orderId];
 
         $this->getProductService()->getProcessedProductById($product['ART_ID']);
 
@@ -87,7 +89,7 @@ class CartService extends ServiceBase
         }
 
         $likely_product = null;
-        foreach ($cartItems[$orderId] as $cartItem) {
+        foreach ($cartItems as $cartItem) {
             if (
                 $cartItem['ART_ID'] == $product['ART_ID'] &&
                 $cartItem['attribute1Selected'] == $product['attribute1Selected'] &&
@@ -101,13 +103,14 @@ class CartService extends ServiceBase
         if ($likely_product !== null) {
             /** @var int $cart_id */
             $cart_id = $likely_product['id'];
-            $new_amount = $cartItems[$orderId][$cart_id]['amount'] + $product['amount'];
-            $cartItems[$orderId][$cart_id]['amount'] = $new_amount;
+            $new_amount = $product['amount'];
+            $cartItems[$cart_id]['amount'] = $new_amount;
 
             if ($new_amount <= 0) {
                 Manager::table('buffet_cart')
                     ->where('id', '=', $cart_id)
                     ->delete();
+                unset($cartItems[$cart_id]);
             } else {
                 Manager::table('buffet_cart')
                     ->where('id', '=', $cart_id)
@@ -130,7 +133,7 @@ class CartService extends ServiceBase
 
                 $new_cart['id'] = $cart_id;
 
-                $cartItems[$orderId][$cart_id] = $new_cart;
+                $cartItems[$cart_id] = $new_cart;
             } else {
                 $cart_id = null;
             }
