@@ -38,7 +38,7 @@ class CartController extends RestController
         $order = $this->getOrderService()->getRawOrderById($orderId);
 
         $cart = $this->getCartService()
-            ->getCartByOrderIdWithProcessedProducts($orderId);
+            ->getProcessedCart($orderId);
 
         $this->responseJson($cart);
     }
@@ -61,7 +61,7 @@ class CartController extends RestController
         $this->getCartService()->changeCartProduct($orderId, $product);
 
         $feedback = $this->getCartService()
-            ->getCartByOrderIdWithProcessedProducts($orderId);
+            ->getProcessedCart($orderId);
 
         $this->responseJson($feedback);
     }
@@ -91,7 +91,7 @@ class CartController extends RestController
 
         $feedback = array(
             'cart' => $this->getCartService()
-                ->getCartByOrderIdWithProcessedProducts($orderId),
+                ->getProcessedCart($orderId),
             'order' => $this->getOrderService()->getProcessedOrderById($orderId)
         );
 

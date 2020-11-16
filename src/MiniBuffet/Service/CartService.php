@@ -20,6 +20,14 @@ class CartService extends ServiceBase
     }
 
     /**
+     * @return OrderService
+     */
+    protected function getOrderService()
+    {
+        return $this->app->container->get('MiniBuffet\Service\OrderService');
+    }
+
+    /**
      * @param int $orderId
      * @return array
      */
@@ -52,6 +60,42 @@ class CartService extends ServiceBase
         }
 
         return $processed_cart;
+    }
+
+    /**
+     * @param int $orderId
+     * @return array
+     * @throws EntityNotFoundException
+     */
+    public function getProcessedCart($orderId)
+    {
+        $cart = $this->getCartByOrderIdWithProcessedProducts($orderId);
+
+        $order = $this->getOrderService()->getRawOrderById($orderId);
+
+        $take_price_from_processed_product =
+            $order['menuType'] == 'buffet' ?
+                function ($processed_product) {
+                    return $processed_product['price'];
+                } :
+                function ($processed_product) {
+                    return $processed_product['PREIS'];
+                };
+
+        $cart_price = array_reduce(
+            $cart,
+            function ($carry, $item) use ($take_price_from_processed_product) {
+                return $carry + $take_price_from_processed_product($item['productInfo']) * $item['amount'];
+            },
+            0
+        );
+
+        $formatted_price = Utils::priceFormatFloat($cart_price);
+
+        return array(
+            'cart' => $cart,
+            'totalPrice' => $formatted_price
+        );
     }
 
     /**
