@@ -97,4 +97,17 @@ class CartController extends RestController
 
         $this->responseJson($feedback);
     }
+
+    /**
+     * @param int $orderId
+     * @throws EntityNotFoundException
+     */
+    public function clearCartByOrderId($orderId)
+    {
+        $this->getCartService()->clearCart($orderId);
+
+        $feedback = $this->getCartService()->getProcessedCart($orderId);
+
+        $this->responseJson($feedback);
+    }
 }

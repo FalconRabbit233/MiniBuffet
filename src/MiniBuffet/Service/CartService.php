@@ -200,4 +200,14 @@ class CartService extends ServiceBase
             }
         }
     }
+
+    /**
+     * @param int $orderId
+     */
+    public function clearCart($orderId)
+    {
+        Manager::table('buffet_cart')
+            ->where('orderId', '=', $orderId)
+            ->delete();
+    }
 }
