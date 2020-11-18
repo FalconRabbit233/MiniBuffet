@@ -49,6 +49,7 @@ class Route
             $order_controller = $app->container->get('MiniBuffet\Controller\OrderController');
 
             $app->get('/:id', array($order_controller, 'getById'));
+            $app->get('/:id/ready', array($order_controller, 'checkReadyToAddDish'));
             $app->post('/:id', array($order_controller, 'addDishesToOrder'));
             $app->post('/:id/close', array($order_controller, 'closeById'));
 

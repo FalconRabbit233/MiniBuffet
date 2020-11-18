@@ -86,4 +86,17 @@ class OrderController extends RestController
         $this->responseJson($feedback);
     }
 
+    /**
+     * @param int $orderId
+     * @throws EntityNotFoundException
+     */
+    public function checkReadyToAddDish($orderId)
+    {
+        $result = $this->getOrderService()->readyToAddDish($orderId);
+
+        $this->responseJson(array(
+            'ready' => $result
+        ));
+    }
+
 }

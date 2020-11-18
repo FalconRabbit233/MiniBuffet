@@ -4,6 +4,8 @@
 namespace MiniBuffet\Service;
 
 
+use DateInterval;
+use DateTime;
 use Illuminate\Database\Capsule\Manager;
 use MiniBuffet\Exception\BuffetItemAmountOverLimitException;
 use MiniBuffet\Exception\BuffetPasswordWrongException;
@@ -117,14 +119,7 @@ class OrderService extends ServiceBase
         $round_increase = 0;
         $using_buffet = $order['diningType'] == 'Buffet';
         if ($using_buffet) {
-            $last_round_at = \DateTime::createFromFormat('Y-m-d H:i:s', $order['lastRoundAt']);
-
-            $new_round_came = (new \DateTime()) >
-                $last_round_at->add(new \DateInterval("PT{$order['timer']}M"));
-
-            $reach_total_round = $order['currentRound'] >= $order['totalRound'];
-
-            if (!$new_round_came || $reach_total_round) {
+            if (!$this->readyToAddDish($orderId)) {
                 $dishes_to_add = array();
             } else {
                 $dish_total_amount = array_reduce(
@@ -225,5 +220,35 @@ class OrderService extends ServiceBase
             ));
 
         return $this->getProcessedOrderById($id);
+    }
+
+    /**
+     * @param int $orderId
+     * @return bool
+     * @throws EntityNotFoundException
+     */
+    public function readyToAddDish($orderId)
+    {
+        $order = $this->getRawOrderById($orderId);
+
+        if ($order['diningType'] == 'Buffet') {
+
+            if ($order['currentRound'] >= $order['totalRound']) {
+                return false;
+            }
+
+            $last_round_at = DateTime::createFromFormat(
+                'Y-m-d H:i:s', $order['lastRoundAt']
+            );
+
+            $current_time = new DateTime();
+
+            $round_interval = new DateInterval("PT{$order['timer']}M");
+
+            return $current_time > $last_round_at->add($round_interval);
+
+        } else {
+            return true;
+        }
     }
 }
