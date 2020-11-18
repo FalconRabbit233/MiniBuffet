@@ -67,6 +67,29 @@ class CartController extends RestController
     }
 
     /**
+     * @param $orderId
+     * @throws EntityNotFoundException
+     * @throws ParamRequiredException
+     */
+    public function changeManyByOrderId($orderId)
+    {
+        $order = $this->getOrderService()->getRawOrderById($orderId);
+
+        $req = $this->readJson();
+
+        self::checkRequired($req, array('items'));
+
+        $products = $req['items'];
+
+        $this->getCartService()->changeCartProducts($orderId, $products);
+
+        $feedback = $this->getCartService()
+            ->getProcessedCart($orderId);
+
+        $this->responseJson($feedback);
+    }
+
+    /**
      * @param int $orderId
      * @throws EntityNotFoundException
      * @throws BuffetItemAmountOverLimitException
