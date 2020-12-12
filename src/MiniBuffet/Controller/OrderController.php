@@ -52,7 +52,7 @@ class OrderController extends RestController
      */
     public function addDishesToOrder($orderId)
     {
-        $order = $this->getOrderService()->getProcessedOrderById($orderId);
+        $order = $this->getOrderService()->getRawOrderById($orderId);
 
         if ($order['closed']) {
             throw new OrderClosedException($orderId);
@@ -67,6 +67,18 @@ class OrderController extends RestController
         $feedback = $this->getOrderService()->getProcessedOrderById($orderId);
 
         $this->responseJson($feedback);
+    }
+
+    /**
+     * @param int $id
+     * @param int $round
+     */
+    public function getDetailsByIdAndRound($id, $round)
+    {
+        $result = $this->getOrderService()
+            ->getDetailsByOrderIdAndRound($id, $round);
+
+        $this->responseJson($result);
     }
 
     /**

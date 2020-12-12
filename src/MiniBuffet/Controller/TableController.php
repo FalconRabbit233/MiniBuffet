@@ -181,6 +181,7 @@ TEXT
                 'childCount' => $req['childCount'],
                 'timer' => $req['timer'],
                 'item' => $req['item'],
+                'currentRound' => 1,
                 'totalRound' => $total_round,
                 'password' => $password,
                 'createdAt' => date('Y-m-d H:i:s'),

@@ -54,6 +54,27 @@ class OrderService extends ServiceBase
     }
 
     /**
+     * @param array $rawDetails
+     * @return array
+     */
+    public function processDetails($rawDetails)
+    {
+        $processed_details = array();
+        foreach ($rawDetails as $rawDetail) {
+            try {
+                $rawDetail['product'] = $this->getProductService()
+                    ->getProcessedProductById($rawDetail['ART_ID']);
+            } catch (EntityNotFoundException $exception) {
+                continue;
+            }
+
+            $processed_details[] = $rawDetail;
+        }
+
+        return $processed_details;
+    }
+
+    /**
      * @param int $id
      * @return array
      * @throws EntityNotFoundException
@@ -61,24 +82,32 @@ class OrderService extends ServiceBase
     public function getProcessedOrderById($id)
     {
         $raw_details = $this->getRawDetailsByOrderId($id);
-
-        $processed_details = array();
-        foreach ($raw_details as $raw_detail) {
-            try {
-                $raw_details['product'] = $this->getProductService()
-                    ->getProcessedProductById($raw_detail['ART_ID']);
-            } catch (EntityNotFoundException $exception) {
-                continue;
-            }
-
-            $processed_details[] = $raw_detail;
-        }
+        $processed_details = $this->processDetails($raw_details);
 
         $raw_order = $this->getRawOrderById($id);
 
         $raw_order['details'] = $processed_details;
 
         return $raw_order;
+    }
+
+    /**
+     * @param int $orderId
+     * @param int $round
+     * @return array
+     */
+    public function getDetailsByOrderIdAndRound($orderId, $round)
+    {
+        $raw_details = $this->getRawDetailsByOrderId($orderId);
+
+        $details_in_round = array_filter(
+            $raw_details,
+            function ($raw_detail) use ($round) {
+                return $raw_detail['round'] == $round;
+            }
+        );
+
+        return $this->processDetails($details_in_round);
     }
 
     /**
@@ -233,7 +262,7 @@ class OrderService extends ServiceBase
 
         if ($order['diningType'] == 'Buffet') {
 
-            if ($order['currentRound'] >= $order['totalRound']) {
+            if ($order['currentRound'] > $order['totalRound']) {
                 return false;
             }
 
